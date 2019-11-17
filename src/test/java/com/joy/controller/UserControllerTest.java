@@ -21,8 +21,42 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void shouldGetAUser() throws Exception {
+    public void shouldGetUsersByPassingPageAndLimit() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(USERS_URI + "?page=1&limit=10"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string("10 Users are fetched from page 1"));
+    }
+
+    @Test
+    public void shouldGetUsersWithPageAndWithoutLimit() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(USERS_URI + "?page=1"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string("20 Users are fetched from page 1"));
+    }
+
+    @Test
+    public void shouldGetUsersWithLimitAndWithoutPage() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(USERS_URI + "?limit=10"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string("10 Users are fetched from page 1"));
+    }
+
+    @Test
+    public void shouldGetUsersWithOutLimitAndWithoutPage() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(USERS_URI))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string("20 Users are fetched from page 1"));
+    }
+
+    @Test
+    public void shouldThrowNotFoundWhenAnInvalidURIIsCalled() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("invalidUri/"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldGetAUser() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(USERS_URI + "/Sunny"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().string("Sunny"));
     }
