@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 @RestController
 @RequestMapping("users")
@@ -16,7 +18,7 @@ public class UserController {
         return limit + " Users are fetched from page " + page;
     }
 
-    @GetMapping(path = "/{userName}")
+    @GetMapping(path = "/{userName}", produces = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
     public User getAUser(@PathVariable final String userName) {
         return User.builder().userName(userName).email("sunny.g@email.com")
                 .firstName("Sunny")

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -20,7 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserDtoControllerTest {
 
     private static final String USERS_URI = "/users/";
-    private static final String FILE_PATH = "src/test/resources/json/user.json";
+    private static final String FILE_PATH_JSON = "src/test/resources/json/user.json";
+    private static final String FILE_PATH_XML = "src/test/resources/xml/user.xml";
 
     @Autowired
     private MockMvc mockMvc;
@@ -68,6 +70,14 @@ public class UserDtoControllerTest {
     }
 
     @Test
+    public void shouldGetAUserWithXmlValue() throws Exception {
+        final String content = getXmlString();
+        mockMvc.perform(MockMvcRequestBuilders.get(USERS_URI + "/sunnyg").accept(MediaType.APPLICATION_XML_VALUE))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string(content));
+    }
+
+    @Test
     public void shouldAddAUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post(USERS_URI).content("Raj"))
                 .andExpect(status().isCreated())
@@ -89,7 +99,12 @@ public class UserDtoControllerTest {
     }
 
     private String getJsonString() throws IOException {
-        return new String ( readAllBytes( Paths.get(FILE_PATH)))
+        return new String ( readAllBytes( Paths.get(FILE_PATH_JSON)))
+                .replaceAll("\n","").replaceAll(" ","");
+    }
+
+    private String getXmlString() throws IOException {
+        return new String ( readAllBytes( Paths.get(FILE_PATH_XML)))
                 .replaceAll("\n","").replaceAll(" ","");
     }
 }
