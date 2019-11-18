@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JsonTest
 public class UserTest {
 
-    private static final String FILE_PATH = "src/test/resources/json/user.json";
+    private static final String FILE_PATH = "src/test/resources/json/user.xml";
 
     @Autowired
     private JacksonTester<User> json;
