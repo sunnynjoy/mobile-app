@@ -3,6 +3,8 @@ package com.joy.controller;
 import com.joy.dto.User;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -25,10 +27,10 @@ public class UserController {
                 .lastName("G").build();
     }
 
-    @PostMapping
-    @ResponseStatus(code = CREATED)
-    public String createAUser(@RequestBody final String user) {
-        return "A new user " + user + " is created!";
+    @PostMapping(consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE}, produces = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
+    @ResponseStatus(CREATED)
+    public String createAUser(@Valid @RequestBody final User user) {
+        return "A new user " + user.getFirstName() + " is created!";
     }
 
     @PutMapping
@@ -37,7 +39,7 @@ public class UserController {
     }
 
     @DeleteMapping
-    @ResponseStatus(code = NO_CONTENT)
+    @ResponseStatus(NO_CONTENT)
     public String deleteAUser() {
         return "The user is deleted!";
     }
