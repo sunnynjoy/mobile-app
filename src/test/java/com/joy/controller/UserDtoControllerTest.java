@@ -8,14 +8,19 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+
+import static java.nio.file.Files.readAllBytes;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(UserController.class)
-public class UserControllerTest {
+public class UserDtoControllerTest {
 
     private static final String USERS_URI = "/users/";
+    private static final String FILE_PATH = "src/test/resources/json/user.json";
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,9 +61,10 @@ public class UserControllerTest {
 
     @Test
     public void shouldGetAUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(USERS_URI + "/Sunny"))
+        final String content = getJsonString();
+        mockMvc.perform(MockMvcRequestBuilders.get(USERS_URI + "/sunnyg"))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().string("Sunny"));
+                .andExpect(content().string(content));
     }
 
     @Test
@@ -80,5 +86,10 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete(USERS_URI))
                 .andExpect(status().isNoContent())
                 .andExpect(content().string("The user is deleted!"));
+    }
+
+    private String getJsonString() throws IOException {
+        return new String ( readAllBytes( Paths.get(FILE_PATH)))
+                .replaceAll("\n","").replaceAll(" ","");
     }
 }

@@ -1,5 +1,6 @@
 package com.joy.controller;
 
+import com.joy.dto.User;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -15,9 +16,11 @@ public class UserController {
         return limit + " Users are fetched from page " + page;
     }
 
-    @GetMapping(path = "/{userId}")
-    public String getAUser(@PathVariable final String userId) {
-        return userId;
+    @GetMapping(path = "/{userName}")
+    public User getAUser(@PathVariable final String userName) {
+        return User.builder().userName(userName).email("sunny.g@email.com")
+                .firstName("Sunny")
+                .lastName("G").build();
     }
 
     @PostMapping
