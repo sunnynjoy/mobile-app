@@ -14,19 +14,19 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class User {
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "first name is mandatory")
+    @NotBlank(message = "first name is mandatory")
     private String firstName;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "last name is mandatory")
+    @NotBlank(message = "last name is mandatory")
     private String lastName;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "email is mandatory")
+    @NotBlank(message = "email is mandatory")
     private String email;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "username is mandatory")
+    @NotBlank(message = "username is mandatory")
     private String userName;
 }

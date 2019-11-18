@@ -7,12 +7,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Map;
 
 import static java.nio.file.Files.readAllBytes;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -93,11 +96,13 @@ public class UserDtoControllerTest {
     @Test
     public void shouldThrowValidationErrorWhenFirstNameIsEmpty() throws Exception {
         final String content = getInvalidJsonString();
-        mockMvc.perform(MockMvcRequestBuilders.post(USERS_URI)
+        final MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(USERS_URI)
                 .contentType(APPLICATION_JSON_VALUE)
                 .accept(APPLICATION_JSON_VALUE)
                 .content(content))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest()).andReturn();
+        final Map<String, Object> model = mvcResult.getModelAndView().getModel();
+        assertThat(model.get("firstName")).isEqualTo("first name is mandatory");
     }
 
     @Test
