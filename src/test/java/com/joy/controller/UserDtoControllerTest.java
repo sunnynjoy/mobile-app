@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 import static java.nio.file.Files.readAllBytes;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,6 +23,7 @@ public class UserDtoControllerTest {
 
     private static final String USERS_URI = "/users/";
     private static final String FILE_PATH_JSON = "src/test/resources/json/user.json";
+    private static final String INVALID_FILE_PATH_JSON = "src/test/resources/json/user-invalid.json";
     private static final String FILE_PATH_XML = "src/test/resources/xml/user.xml";
 
     @Autowired
@@ -79,9 +81,23 @@ public class UserDtoControllerTest {
 
     @Test
     public void shouldAddAUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post(USERS_URI).content("Raj"))
+        final String content = getJsonString();
+        mockMvc.perform(MockMvcRequestBuilders.post(USERS_URI)
+                .contentType(APPLICATION_JSON_VALUE)
+                .accept(APPLICATION_JSON_VALUE)
+                .content(content))
                 .andExpect(status().isCreated())
-                .andExpect(content().string("A new user Raj is created!"));
+                .andExpect(content().string("A new user Sunny is created!"));
+    }
+
+    @Test
+    public void shouldThrowValidationErrorWhenFirstNameIsEmpty() throws Exception {
+        final String content = getInvalidJsonString();
+        mockMvc.perform(MockMvcRequestBuilders.post(USERS_URI)
+                .contentType(APPLICATION_JSON_VALUE)
+                .accept(APPLICATION_JSON_VALUE)
+                .content(content))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -99,12 +115,16 @@ public class UserDtoControllerTest {
     }
 
     private String getJsonString() throws IOException {
-        return new String ( readAllBytes( Paths.get(FILE_PATH_JSON)))
-                .replaceAll("\n","").replaceAll(" ","");
+        return new String(readAllBytes(Paths.get(FILE_PATH_JSON)))
+                .replaceAll("\n", "").replaceAll(" ", "");
+    }
+
+    private String getInvalidJsonString() throws IOException {
+        return new String(readAllBytes(Paths.get(INVALID_FILE_PATH_JSON)));
     }
 
     private String getXmlString() throws IOException {
-        return new String ( readAllBytes( Paths.get(FILE_PATH_XML)))
-                .replaceAll("\n","").replaceAll(" ","");
+        return new String(readAllBytes(Paths.get(FILE_PATH_XML)))
+                .replaceAll("\n", "").replaceAll(" ", "");
     }
 }
