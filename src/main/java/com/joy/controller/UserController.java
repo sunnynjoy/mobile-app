@@ -1,5 +1,6 @@
 package com.joy.controller;
 
+import com.joy.dto.UpdateUser;
 import com.joy.dto.User;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,9 +34,12 @@ public class UserController {
         return "A new user " + user.getFirstName() + " is created!";
     }
 
-    @PutMapping
-    public String updateAUser(@RequestBody final String user) {
-        return "The user " + user + " is updated!";
+    @PutMapping("/{userName}")
+    public User updateUserDetails(@PathVariable String userName, @Valid @RequestBody final UpdateUser user) {
+        return User.builder().firstName(user.getFirstName()).lastName(user.getLastName())
+                .email("pew.g@email.com")
+                .userName(userName)
+                .build();
     }
 
     @DeleteMapping
