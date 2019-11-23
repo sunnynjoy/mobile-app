@@ -26,6 +26,8 @@ public class UserDtoControllerTest {
 
     private static final String USERS_URI = "/users/";
     private static final String FILE_PATH_JSON = "src/test/resources/json/user.json";
+    private static final String UPDATE_USER_RESPONSE_FILE_PATH_JSON = "src/test/resources/json/update/user.json";
+    private static final String UPDATE_USER_REQUEST_FILE_PATH_JSON = "src/test/resources/json/update/update-user.json";
     private static final String INVALID_FILE_PATH_JSON = "src/test/resources/json/user-invalid.json";
     private static final String FILE_PATH_XML = "src/test/resources/xml/user.xml";
 
@@ -68,7 +70,7 @@ public class UserDtoControllerTest {
 
     @Test
     public void shouldGetAUser() throws Exception {
-        final String content = getJsonString();
+        final String content = getJsonString(FILE_PATH_JSON);
         mockMvc.perform(MockMvcRequestBuilders.get(USERS_URI + "/sunnyg"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().string(content));
@@ -84,7 +86,7 @@ public class UserDtoControllerTest {
 
     @Test
     public void shouldAddAUser() throws Exception {
-        final String content = getJsonString();
+        final String content = getJsonString(FILE_PATH_JSON);
         mockMvc.perform(MockMvcRequestBuilders.post(USERS_URI)
                 .contentType(APPLICATION_JSON_VALUE)
                 .accept(APPLICATION_JSON_VALUE)
@@ -94,7 +96,7 @@ public class UserDtoControllerTest {
     }
 
     @Test
-    public void shouldThrowValidationErrorWhenFirstNameIsEmpty() throws Exception {
+    public void shouldThrowValidationErrorWhenFirstNameIsEmptyForCreateUser() throws Exception {
         final String content = getInvalidJsonString();
         final MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(USERS_URI)
                 .contentType(APPLICATION_JSON_VALUE)
@@ -107,9 +109,25 @@ public class UserDtoControllerTest {
 
     @Test
     public void shouldUpdateAUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put(USERS_URI).content("Raj"))
+        final String content = getJsonString(UPDATE_USER_REQUEST_FILE_PATH_JSON);
+        mockMvc.perform(MockMvcRequestBuilders.put(USERS_URI + "/pewg")
+                .content(content)
+                .contentType(APPLICATION_JSON_VALUE)
+                .accept(APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(content().string("The user Raj is updated!"));
+                .andExpect(content().string(getJsonString(UPDATE_USER_RESPONSE_FILE_PATH_JSON)));
+    }
+
+    @Test
+    public void shouldThrowValidationErrorWhenFirstNameIsEmptyForUpdateUser() throws Exception {
+        final String content = getInvalidJsonString();
+        final MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put(USERS_URI + "/pewg")
+                .contentType(APPLICATION_JSON_VALUE)
+                .accept(APPLICATION_JSON_VALUE)
+                .content(content))
+                .andExpect(status().isBadRequest()).andReturn();
+        final Map<String, Object> model = mvcResult.getModelAndView().getModel();
+        assertThat(model.get("firstName")).isEqualTo("first name is mandatory");
     }
 
     @Test
@@ -119,8 +137,8 @@ public class UserDtoControllerTest {
                 .andExpect(content().string("The user is deleted!"));
     }
 
-    private String getJsonString() throws IOException {
-        return new String(readAllBytes(Paths.get(FILE_PATH_JSON)))
+    private String getJsonString(final String path) throws IOException {
+        return new String(readAllBytes(Paths.get(path)))
                 .replaceAll("\n", "").replaceAll(" ", "");
     }
 
