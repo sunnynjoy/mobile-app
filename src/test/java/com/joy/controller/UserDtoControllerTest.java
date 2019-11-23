@@ -132,9 +132,9 @@ public class UserDtoControllerTest {
 
     @Test
     public void shouldDeleteAUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete(USERS_URI))
+        mockMvc.perform(MockMvcRequestBuilders.delete(USERS_URI + "/sunnyg"))
                 .andExpect(status().isNoContent())
-                .andExpect(content().string("The user is deleted!"));
+                .andExpect(content().string("The user sunnyg is deleted!"));
     }
 
     private String getJsonString(final String path) throws IOException {

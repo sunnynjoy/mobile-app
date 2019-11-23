@@ -42,9 +42,9 @@ public class UserController {
                 .build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{userName}")
     @ResponseStatus(NO_CONTENT)
-    public String deleteAUser() {
-        return "The user is deleted!";
+    public String deleteAUser(@PathVariable String userName) {
+        return "The user " + userName + " is deleted!";
     }
 }
