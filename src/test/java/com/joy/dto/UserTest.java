@@ -1,6 +1,5 @@
 package com.joy.dto;
 
-import org.assertj.core.api.MapAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JsonTest
 public class UserTest {
 
-    private static final String FILE_PATH = "src/test/resources/json/user.xml";
+    private static final String FILE_PATH = "src/test/resources/json/user.json";
 
     @Autowired
     private JacksonTester<User> json;
